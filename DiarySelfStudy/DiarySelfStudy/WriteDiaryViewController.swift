@@ -7,6 +7,11 @@
 
 import UIKit
 
+enum WriteMode {
+    case new
+    case edit(Diary)
+}
+
 protocol WriteDiaryViewDelegate: AnyObject {
     func registerDiary(diary: Diary)
 }
@@ -20,10 +25,12 @@ class WriteDiaryViewController: UIViewController {
     
     weak var delegate: WriteDiaryViewDelegate?
     var datePicker = UIDatePicker()
+    var writeMode = WriteMode.new
     private var diaryDate: Date?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureWriteMode()
         configureContentView()
         configureDatePicker()
         configureTextField()
@@ -32,9 +39,29 @@ class WriteDiaryViewController: UIViewController {
     
     @IBAction func tapRegisterButton(_ sender: UIBarButtonItem) {
         guard let title = titleTextField.text, let content = contentTextView.text, let date = diaryDate else { return }
-        let diary = Diary(id: UUID().uuidString, title: title, content: content, date: date, isStar: false)
-        delegate?.registerDiary(diary: diary)
+        switch writeMode {
+        case .new:
+            let diary = Diary(id: UUID().uuidString, title: title, content: content, date: date, isStar: false)
+            delegate?.registerDiary(diary: diary)
+        case let .edit(diary):
+            let diary = Diary(id: diary.id, title: title, content: content, date: date, isStar: diary.isStar)
+            NotificationCenter.default.post(name: Notification.Name.editDiary,
+                                            object: diary,
+                                            userInfo: nil)
+        }
         self.navigationController?.popViewController(animated: true)
+    }
+    private func configureWriteMode() {
+        switch writeMode {
+        case let .edit(diary: diary):
+            titleTextField.text = diary.title
+            contentTextView.text = diary.content
+            dateTextField.text = dateToString(from: diary.date)
+            diaryDate = diary.date
+            registerButton.title = "수정"
+        default:
+            break
+        }
     }
     
     private func configureContentView() {
@@ -60,6 +87,13 @@ class WriteDiaryViewController: UIViewController {
     
     private func handleFields() {
         registerButton.isEnabled = !(titleTextField.text?.isEmpty ?? true) && !(dateTextField.text?.isEmpty ?? true) && !contentTextView.text.isEmpty
+    }
+    
+    private func dateToString(from date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yy년 MM월 dd일(EEEEE)"
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        return dateFormatter.string(from: date)
     }
     
     @objc func datePickerChanged(_ datePicker: UIDatePicker) {

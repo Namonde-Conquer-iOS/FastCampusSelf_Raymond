@@ -11,10 +11,15 @@ class DiaryListViewController: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
     
-    var diaryList = [Diary]()
+    var diaryList = [Diary]() {
+        didSet {
+            saveData()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadData()
         configureCollectionView()
     }
     
@@ -34,11 +39,31 @@ class DiaryListViewController: UIViewController {
     }
     
     private func saveData() {
-        
+        let userDefaults = UserDefaults.standard
+        let diaries = diaryList.map {
+            [
+                "id": $0.id,
+                "title": $0.title,
+                "content": $0.content,
+                "date": $0.date,
+                "isStar": $0.isStar
+            ]
+        }
+        userDefaults.set(diaries, forKey: "diaryList")
     }
     
-    private func loadData() -> [Diary] {
-        
+    private func loadData() {
+        let userDefaults = UserDefaults.standard
+        guard let diaries = userDefaults.object(forKey: "diaryList") as? [[String: Any]] else { return }
+        diaryList = diaries.compactMap {
+            guard let id = $0["id"] as? String, let title = $0["title"] as? String, let content = $0["content"] as? String,
+                  let date = $0["date"] as? Date, let isStar = $0["isStar"] as? Bool else { return nil }
+            let diary = Diary(id: id, title: title, content: content, date: date, isStar: isStar)
+            return diary
+        }
+        diaryList = diaryList.sorted {
+            $0.date.compare($1.date) == .orderedAscending
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -65,6 +90,15 @@ extension DiaryListViewController: UICollectionViewDataSource {
 extension DiaryListViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: (UIScreen.main.bounds.width / 2) - 20, height: 200)
+    }
+}
+
+extension DiaryListViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let detailViewController = storyboard?.instantiateViewController(identifier: "DiaryDetailViewController") as? DiaryDetailViewController else { return }
+        detailViewController.diary = diaryList[indexPath.row]
+        navigationController?.pushViewController(detailViewController, animated: true)
+        
     }
 }
 

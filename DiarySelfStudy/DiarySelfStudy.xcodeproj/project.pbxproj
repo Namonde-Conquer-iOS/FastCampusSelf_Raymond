@@ -19,6 +19,7 @@
 		E6317761287AE9180031308B /* ListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6317760287AE9180031308B /* ListCell.swift */; };
 		E6317763287AE9250031308B /* StarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6317762287AE9250031308B /* StarCell.swift */; };
 		E6317765287AECBF0031308B /* Diary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6317764287AECBF0031308B /* Diary.swift */; };
+		E689D8E0287C69D200D5A1FD /* Extension+NotificationName.swift in Sources */ = {isa = PBXBuildFile; fileRef = E689D8DF287C69D200D5A1FD /* Extension+NotificationName.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		E6317760287AE9180031308B /* ListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCell.swift; sourceTree = "<group>"; };
 		E6317762287AE9250031308B /* StarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarCell.swift; sourceTree = "<group>"; };
 		E6317764287AECBF0031308B /* Diary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diary.swift; sourceTree = "<group>"; };
+		E689D8DF287C69D200D5A1FD /* Extension+NotificationName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+NotificationName.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 				E6317764287AECBF0031308B /* Diary.swift */,
 				E631775A287AE61B0031308B /* DiaryDetailViewController.swift */,
 				E631775C287AE6230031308B /* WriteDiaryViewController.swift */,
+				E689D8DF287C69D200D5A1FD /* Extension+NotificationName.swift */,
 				E631775E287AE6300031308B /* StarDiaryViewController.swift */,
 				E631774D287ADFA70031308B /* Assets.xcassets */,
 				E631774F287ADFA70031308B /* LaunchScreen.storyboard */,
@@ -165,6 +168,7 @@
 				E631775D287AE6230031308B /* WriteDiaryViewController.swift in Sources */,
 				E6317759287AE6100031308B /* DiaryListViewController.swift in Sources */,
 				E6317747287ADFA60031308B /* SceneDelegate.swift in Sources */,
+				E689D8E0287C69D200D5A1FD /* Extension+NotificationName.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
