@@ -9,4 +9,6 @@ import Foundation
 
 extension Notification.Name {
     static let editDiary = Notification.Name("editDiary")
+    static let starDiary = Notification.Name("starDiary")
+    static let deleteDiary = Notification.Name("deleteDiary")
 }

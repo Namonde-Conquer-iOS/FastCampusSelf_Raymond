@@ -51,6 +51,9 @@ class DiaryDetailViewController: UIViewController {
         let image = isStar ? UIImage(systemName: "star") : UIImage(systemName: "star.fill")
         starButton?.image = image
         diary?.isStar.toggle()
+        NotificationCenter.default.post(name: NSNotification.Name.starDiary,
+                                        object: diary,
+                                        userInfo: nil)
     }
     
     @objc func editDiaryNotification(_ notification: Notification) {
@@ -66,6 +69,13 @@ class DiaryDetailViewController: UIViewController {
         navigationController?.pushViewController(writeViewController, animated: true)
     }
     @IBAction func tapDeleteButton(_ sender: UIButton) {
-        
+        NotificationCenter.default.post(name: NSNotification.Name.deleteDiary,
+                                        object: diary?.id,
+                                        userInfo: nil)
+        navigationController?.popViewController(animated: true)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }

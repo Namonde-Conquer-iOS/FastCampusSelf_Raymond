@@ -21,6 +21,18 @@ class DiaryListViewController: UIViewController {
         super.viewDidLoad()
         loadData()
         configureCollectionView()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(starDiaryNotification(_:)),
+                                               name: NSNotification.Name.starDiary,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(editDiaryNotification(_:)),
+                                               name: Notification.Name.editDiary,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(deleteNotification(_:)),
+                                               name: NSNotification.Name.deleteDiary,
+                                               object: nil)
     }
     
     
@@ -66,6 +78,35 @@ class DiaryListViewController: UIViewController {
         }
     }
     
+    @objc func starDiaryNotification(_ notification: Notification) {
+        guard let diary = notification.object as? Diary else { return }
+        guard let index = diaryList.firstIndex(where: {
+            $0.id == diary.id
+        }) else { return }
+        diaryList[index].isStar.toggle()
+    }
+    
+    @objc func editDiaryNotification(_ notification: Notification) {
+        guard let diary = notification.object as? Diary else { return }
+        guard let index = diaryList.firstIndex(where: {
+            $0.id == diary.id
+        }) else { return }
+        diaryList[index] = diary
+        diaryList = diaryList.sorted {
+            $0.date.compare($1.date) == .orderedAscending
+        }
+        collectionView.reloadData()
+    }
+    
+    @objc func deleteNotification(_ notification: Notification) {
+        guard let id = notification.object as? String else { return }
+        guard let index = diaryList.firstIndex(where: {
+            $0.id == id
+        }) else { return }
+        diaryList.remove(at: index)
+        collectionView.deleteItems(at: [IndexPath(row: index, section: 0)])
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let viewController = segue.destination as? WriteDiaryViewController else { return }
         viewController.delegate = self
@@ -97,6 +138,7 @@ extension DiaryListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let detailViewController = storyboard?.instantiateViewController(identifier: "DiaryDetailViewController") as? DiaryDetailViewController else { return }
         detailViewController.diary = diaryList[indexPath.row]
+        detailViewController.indexPath = indexPath
         navigationController?.pushViewController(detailViewController, animated: true)
         
     }
